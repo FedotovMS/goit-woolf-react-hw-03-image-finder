@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { toast } from 'react-toastify';
-import getImages from 'components/Api/Api';
 import styles from './Searchbar.module.css';
 
 export default class Searchbar extends Component {
