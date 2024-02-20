@@ -16,7 +16,6 @@ export class App extends Component {
     totalImages: 0,
     images: [],
     status: 'idle',
-    notification: { type: '', message: '' },
   };
 
   componentDidUpdate(_, prevState) {
@@ -40,20 +39,10 @@ export class App extends Component {
       const { images, totalImages } = await FetchImages(searchQuery, page);
 
       if (images.length === 0) {
-        this.setState({
-          notification: {
-            type: 'error',
-            message: 'Nothing found. Please, change your request.',
-          },
-        });
+        toast.error('Nothing found. Please, change your request.');
       }
       if (images.length !== 0 && page === 1) {
-        this.setState({
-          notification: {
-            type: 'success',
-            message: `We have found ${totalImages} images on your request.`,
-          },
-        });
+        toast.success(`We have found ${totalImages} images on your request.`);
       }
 
       if (
@@ -61,12 +50,7 @@ export class App extends Component {
         page !== 1 &&
         totalImages <= this.state.images.length + 12
       ) {
-        this.setState({
-          notification: {
-            type: 'info',
-            message: 'There are no more images.',
-          },
-        });
+        toast.info('There are no more images.');
       }
 
       this.setState(prevState => ({
@@ -75,48 +59,13 @@ export class App extends Component {
         totalImages,
       }));
     } catch (error) {
-      console.log(error.message);
-      this.setState({
-        notification: {
-          type: 'error',
-          message: 'There are some problems! Try again later.',
-        },
-        status: 'rejected',
-      });
-    }
-  };
-  handleNotification = () => {
-    const notificationType = this.state.notification.type;
-    const notificationMessage = this.state.notification.message;
-
-    if (notificationType === 'info') {
-      toast.info(notificationMessage);
-      this.setState({
-        notification: { type: '', message: '' },
-      });
-    }
-    if (notificationType === 'error') {
-      toast.error(notificationMessage);
-      this.setState({
-        notification: { type: '', message: '' },
-      });
-    }
-    if (notificationType === 'success') {
-      toast.success(notificationMessage);
-      this.setState({
-        notification: { type: '', message: '' },
-      });
+      toast.error('There are some problems! Try again later.');
     }
   };
 
   formSubmitHandler = searchQuery => {
     if (searchQuery === this.state.searchQuery) {
-      this.setState({
-        notification: {
-          type: 'info',
-          message: 'Images on your request is already shown.',
-        },
-      });
+      toast.info('Images on your request is already shown.');
       return;
     }
     this.setState({
